@@ -12,7 +12,7 @@ const HomePage = () => {
                             <h1 className="text-3xl font-bold text-gray-900">
                                 Sanskriti Blog
                             </h1>
-                        </div>
+                        </div>git
 
                         {/* Navigation */}
                         <nav className="hidden md:flex space-x-8">
