@@ -1,93 +1,150 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import './home.page.css';
 
 const HomePage = () => {
     const [darkMode, setDarkMode] = useState(false);
     const [showCategories, setShowCategories] = useState(false);
+    const dropdownRef = useRef(null);
     const categories = [
         'Technology',
-        'Health',
-        'Travel',
+        'Health & Wellness',
+        'Travel & Adventure',
         'Education',
         'Lifestyle',
-        'Finance',
+        'Finance & Business',
+        'Food & Cooking',
+        'Arts & Culture',
+        'Science',
+        'Sports',
+        'Photography',
+        'Fashion & Beauty',
+        'Home & Garden',
+        'Music',
+        'Movies & TV',
+        'Books & Literature'
     ];
 
-    const handleThemeToggle = () => {
-        setDarkMode(!darkMode);
-        if (!darkMode) {
+    // Handle click outside dropdown to close it
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setShowCategories(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    // Initialize theme from localStorage
+    useEffect(() => {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            setDarkMode(true);
             document.documentElement.classList.add('dark');
+        } else if (savedTheme === 'light') {
+            setDarkMode(false);
+            document.documentElement.classList.remove('dark');
+        } else {
+            // Auto-detect system preference
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            setDarkMode(prefersDark);
+            if (prefersDark) {
+                document.documentElement.classList.add('dark');
+            }
+        }
+    }, []);
+
+    const handleThemeToggle = () => {
+        const newDarkMode = !darkMode;
+        setDarkMode(newDarkMode);
+
+        if (newDarkMode) {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
         } else {
             document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
         }
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="home-container">
             {/* Header Section */}
-            <header className="bg-white shadow-lg">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center py-6">
+            <header className="header">
+                <div className="header-content">
+                    <div className="header-inner">
                         {/* Logo */}
-                        <div className="flex items-center">
-                            <h1 className="text-3xl font-bold text-gray-900">
+                        <div className="logo-container">
+                            <h1 className="logo-text">
                                 Sanskriti Blog
                             </h1>
-                        </div>git
+                        </div>
 
                         {/* Navigation */}
-                        <nav className="hidden md:flex space-x-8">
-                    
+                        <nav className="nav">
+
                         </nav>
 
                         {/* CTA Button */}
-                        <div className="flex items-center space-x-4">
+                        <div className="cta-container">
                             {/* Categories Dropdown Button */}
-                            <div className="relative">
+                            <div className="categories-dropdown" ref={dropdownRef}>
                                 <button
-                                    className="bg-white text-blue-600 border border-blue-600 px-6 py-2 rounded-lg hover:bg-blue-50 transition-colors font-medium flex items-center gap-2"
+                                    className="categories-button"
                                     onClick={() => setShowCategories((prev) => !prev)}
                                 >
                                     Categories
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="categories-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                     </svg>
                                 </button>
                                 {showCategories && (
-                                    <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-                                        <ul className="py-2">
+                                    <div className={`categories-menu ${showCategories ? 'show' : ''}`}>
+                                        <ul className="categories-list">
                                             {categories.map((cat) => (
-                                                <li key={cat}>
-                                                    <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">{cat}</a>
+                                                <li key={cat} className="categories-item">
+                                                    <a href="#" className="categories-link" onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setShowCategories(false);
+                                                    }}>{cat}</a>
                                                 </li>
                                             ))}
                                         </ul>
                                     </div>
                                 )}
                             </div>
-                            <button className="bg-blue-600 text-black px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
-                                {/* Combined copy and pencil icon (larger) */}
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <rect x="4" y="4" width="12" height="12" rx="2" strokeWidth="2" />
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7l2 2m-2-2l-6 6a2 2 0 002 2l6-6a2 2 0 00-2-2z" />
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 17h2a2 2 0 002-2v-2" />
-                                </svg>
+                            <a href="/write" className="write-article-link">
                                 Write Article
+                            </a>
+
+
+                            <a href="/signin" className="sign-in-link">
+                                Sign In
+                            </a>
+                            <a href="/contact" className="contact-link">
+                                Contact
+                            </a>
+                            <button className="get-started-btn">
+                                Get Started
                             </button>
-                            
-                            {/* Theme Mode Icon - comes before Sign In */}
+
+                                {/* Theme Mode Icon - comes before Sign In */}
                             <button
-                                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                                className="theme-toggle"
                                 aria-label="Toggle Theme"
                                 onClick={handleThemeToggle}
                             >
                                 {darkMode ? (
                                     // Moon icon for dark mode
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="theme-icon theme-icon-moon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
                                     </svg>
                                 ) : (
                                     // Sun icon for light mode (improved)
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="theme-icon theme-icon-sun" fill="currentColor" viewBox="0 0 24 24">
                                         <circle cx="12" cy="12" r="5" />
                                         <g stroke="currentColor" strokeWidth="2">
                                             <line x1="12" y1="1" x2="12" y2="3" />
@@ -102,97 +159,10 @@ const HomePage = () => {
                                     </svg>
                                 )}
                             </button>
-                            <button className="bg-white text-blue-600 border border-blue-600 px-6 py-2 rounded-lg hover:bg-blue-50 transition-colors font-medium">
-                                Sign In
-                            </button>
-                            <button className="bg-indigo-600 text-black px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors font-semibold">
-                                Get Started
-                            </button>
-                            <button className="bg-green-600 text-black px-6 py-2 rounded-lg hover:bg-green-700 transition-colors font-semibold">
-                                Contact
-                            </button>
                         </div>
                     </div>
                 </div>
             </header>
-
-            {/* Hero Section */}
-            {/* <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <div className="text-center">
-                    <h2 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-                        Welcome to <span className="text-blue-600">Sanskriti Blog</span>
-                    </h2>
-                    <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-                        Discover amazing stories, insights, and knowledge from our community of writers.
-                        Share your thoughts and connect with readers worldwide.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <button className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold">
-                            Start Reading
-                        </button>
-                        <button className="border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-lg hover:bg-blue-50 transition-colors text-lg font-semibold">
-                            Join Community
-                        </button>
-                    </div>
-                </div> */}
-
-                {/* Featured Content Preview */}
-                {/* <div className="mt-16">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">
-                        Featured Articles
-                    </h3>
-                    <div className="grid md:grid-cols-3 gap-8"> */}
-                        {/* Article Preview Cards */}
-                        {/* <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                            <div className="h-48 bg-gradient-to-r from-blue-400 to-purple-500"></div>
-                            <div className="p-6">
-                                <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                                    Getting Started with React
-                                </h4>
-                                <p className="text-gray-600 mb-4">
-                                    Learn the fundamentals of React and build your first component...
-                                </p>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm text-gray-500">5 min read</span>
-                                    <span className="text-blue-600 font-medium">Read More</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                            <div className="h-48 bg-gradient-to-r from-green-400 to-blue-500"></div>
-                            <div className="p-6">
-                                <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                                    Modern Web Development
-                                </h4>
-                                <p className="text-gray-600 mb-4">
-                                    Explore the latest trends and best practices in web development...
-                                </p>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm text-gray-500">8 min read</span>
-                                    <span className="text-blue-600 font-medium">Read More</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                            <div className="h-48 bg-gradient-to-r from-purple-400 to-pink-500"></div>
-                            <div className="p-6">
-                                <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                                    UI/UX Design Tips
-                                </h4>
-                                <p className="text-gray-600 mb-4">
-                                    Create beautiful and user-friendly interfaces with these tips...
-                                </p>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm text-gray-500">6 min read</span>
-                                    <span className="text-blue-600 font-medium">Read More</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </main> */}
 
         </div>
     );
