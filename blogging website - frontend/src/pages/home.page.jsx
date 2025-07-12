@@ -1,6 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const HomePage = () => {
+    const [darkMode, setDarkMode] = useState(false);
+    const [showCategories, setShowCategories] = useState(false);
+    const categories = [
+        'Technology',
+        'Health',
+        'Travel',
+        'Education',
+        'Lifestyle',
+        'Finance',
+    ];
+
+    const handleThemeToggle = () => {
+        setDarkMode(!darkMode);
+        if (!darkMode) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-50">
             {/* Header Section */}
@@ -16,16 +36,80 @@ const HomePage = () => {
 
                         {/* Navigation */}
                         <nav className="hidden md:flex space-x-8">
-                            <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">Home</a>
-                            <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">About</a>
-                            <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">Blog</a>
-                            <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">Contact</a>
+                    
                         </nav>
 
                         {/* CTA Button */}
                         <div className="flex items-center space-x-4">
-                            <button className="bg-blue-600 text-black px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            {/* Categories Dropdown Button */}
+                            <div className="relative">
+                                <button
+                                    className="bg-white text-blue-600 border border-blue-600 px-6 py-2 rounded-lg hover:bg-blue-50 transition-colors font-medium flex items-center gap-2"
+                                    onClick={() => setShowCategories((prev) => !prev)}
+                                >
+                                    Categories
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                                {showCategories && (
+                                    <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                                        <ul className="py-2">
+                                            {categories.map((cat) => (
+                                                <li key={cat}>
+                                                    <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">{cat}</a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
+                            <button className="bg-blue-600 text-black px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                                {/* Combined copy and pencil icon (larger) */}
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <rect x="4" y="4" width="12" height="12" rx="2" strokeWidth="2" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7l2 2m-2-2l-6 6a2 2 0 002 2l6-6a2 2 0 00-2-2z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 17h2a2 2 0 002-2v-2" />
+                                </svg>
                                 Write Article
+                            </button>
+                            
+                            {/* Theme Mode Icon - comes before Sign In */}
+                            <button
+                                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                                aria-label="Toggle Theme"
+                                onClick={handleThemeToggle}
+                            >
+                                {darkMode ? (
+                                    // Moon icon for dark mode
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
+                                    </svg>
+                                ) : (
+                                    // Sun icon for light mode (improved)
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="5" />
+                                        <g stroke="currentColor" strokeWidth="2">
+                                            <line x1="12" y1="1" x2="12" y2="3" />
+                                            <line x1="12" y1="21" x2="12" y2="23" />
+                                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                                            <line x1="1" y1="12" x2="3" y2="12" />
+                                            <line x1="21" y1="12" x2="23" y2="12" />
+                                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                                        </g>
+                                    </svg>
+                                )}
+                            </button>
+                            <button className="bg-white text-blue-600 border border-blue-600 px-6 py-2 rounded-lg hover:bg-blue-50 transition-colors font-medium">
+                                Sign In
+                            </button>
+                            <button className="bg-indigo-600 text-black px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors font-semibold">
+                                Get Started
+                            </button>
+                            <button className="bg-green-600 text-black px-6 py-2 rounded-lg hover:bg-green-700 transition-colors font-semibold">
+                                Contact
                             </button>
                         </div>
                     </div>
